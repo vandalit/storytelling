@@ -57,8 +57,12 @@ Frases como “Just having fun. Maybe a little pretentious.” revelan que la pe
 
 🧠 Consolidado de Conceptos Clave
 Término	Significado
+
 Metamedia	Medios que pueden simular y transformar otros medios; vinculado a software creativo (Manovich, Kay).
+
 Diseño cognitivo	Diseño centrado en cómo pensamos, percibimos, memorizamos y resolvemos problemas.
+
 Diseño semántico	Diseño enfocado en la construcción de significado y uso del lenguaje/representaciones simbólicas.
+
 Interfaz significativa	Interfaces que no solo funcionan, sino que transmiten o transforman sentido.
 
