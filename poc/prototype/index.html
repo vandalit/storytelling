@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Narrative — POC UX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<!-- Task flow selector (desktop helper) -->
+<div id="task-bar" style="
+  position:fixed;top:0;left:0;right:0;
+  background:#111;border-bottom:1px solid #222;
+  padding:8px 16px;display:flex;gap:8px;align-items:center;
+  font-size:12px;font-family:Inter,sans-serif;color:#666;
+  z-index:100;flex-wrap:wrap;
+">
+  <span style="font-weight:700;color:#444;margin-right:4px">Task flows →</span>
+  <button onclick="runFlow('capture')" style="background:#1a1a1a;border:1px solid #333;color:#9B7FC7;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer">1 · Captura mínima</button>
+  <button onclick="runFlow('project')" style="background:#1a1a1a;border:1px solid #333;color:#9B7FC7;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer">2 · Crear proyecto</button>
+  <button onclick="runFlow('enrich')" style="background:#1a1a1a;border:1px solid #333;color:#9B7FC7;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer">3 · Enriquecer card</button>
+  <button onclick="runFlow('timeline')" style="background:#1a1a1a;border:1px solid #333;color:#9B7FC7;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer">4 · Timeline + beat</button>
+  <button onclick="runFlow('pkm')" style="background:#1a1a1a;border:1px solid #333;color:#9B7FC7;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer">5 · Búsqueda PKM</button>
+  <button onclick="runFlow('reset')" style="background:#1a1a1a;border:1px solid #333;color:#555;padding:4px 10px;border-radius:20px;font-size:11px;cursor:pointer;margin-left:auto">↺ Reset</button>
+</div>
+
+<!-- Phone frame -->
+<div id="frame" style="margin-top:52px;">
+  <div id="app">
+
+    <!-- App bar -->
+    <div id="appbar"></div>
+
+    <!-- Main screen -->
+    <div id="screen"></div>
+
+    <!-- FAB -->
+    <button id="fab">+</button>
+
+    <!-- Sheet overlay + bottom sheet -->
+    <div id="sheet-overlay" onclick="closeSheet()"></div>
+    <div id="sheet"></div>
+
+    <!-- Off-canvas overlay + drawer -->
+    <div id="canvas-overlay" onclick="closeCanvas()"></div>
+    <div id="offcanvas"></div>
+
+  </div>
+</div>
+
+<!-- Flow hint overlay -->
+<div id="flow-hint" style="
+  display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  background:#1A1A1A;border:1px solid #333;border-radius:12px;
+  padding:12px 20px;font-size:13px;color:#aaa;font-family:Inter,sans-serif;
+  max-width:340px;text-align:center;z-index:200;box-shadow:0 8px 32px rgba(0,0,0,0.6);
+">
+  <span id="flow-hint-text"></span>
+  <button onclick="document.getElementById('flow-hint').style.display='none'"
+    style="margin-left:12px;background:none;border:none;color:#555;cursor:pointer;font-size:16px">×</button>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+// Task flow shortcuts
+function runFlow(flow) {
+  // Reset state first
+  state.history = [];
+  state.filters = [];
+  state.sheet = null;
+  closeSheet();
+  closeCanvas();
+
+  const hints = {
+    capture: '→ Toca + (FAB) · Escribe una idea · Guarda · Aparece en Inbox',
+    project: '→ Toca + · "Nuevo proyecto" · Ponle nombre · Tipo: one-shot · Crear',
+    enrich:  '→ Abre "El Umbral" · Tap "Ana Ruiz" · Expande secciones de Psicología y Arco',
+    timeline:'→ Abre "El Umbral" · Tab Timeline · Toca una escena sin posición · Asigna beat',
+    pkm:     '→ Toca ☰ hamburger · Busca "#ana-ruiz" · O toca un tag en la nube',
+    reset:   null,
+  };
+
+  switch (flow) {
+    case 'capture':
+      navigate('home');
+      showHint(hints.capture);
+      break;
+    case 'project':
+      navigate('home');
+      showHint(hints.project);
+      break;
+    case 'enrich':
+      navigate('project', { projectId: 'p1' });
+      showHint(hints.enrich);
+      break;
+    case 'timeline':
+      navigate('project', { projectId: 'p1', view: 'timeline' });
+      state.view = 'timeline';
+      renderProject();
+      showHint(hints.timeline);
+      break;
+    case 'pkm':
+      navigate('home');
+      showHint(hints.pkm);
+      break;
+    case 'reset':
+      navigate('home');
+      break;
+  }
+}
+
+function showHint(text) {
+  if (!text) return;
+  document.getElementById('flow-hint-text').textContent = text;
+  document.getElementById('flow-hint').style.display = 'flex';
+  document.getElementById('flow-hint').style.alignItems = 'center';
+  setTimeout(() => document.getElementById('flow-hint').style.display = 'none', 6000);
+}
+</script>
+</body>
+</html>
